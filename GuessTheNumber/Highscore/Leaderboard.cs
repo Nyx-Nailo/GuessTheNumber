@@ -13,36 +13,42 @@ namespace GuessTheNumber.Highscore
     internal class Leaderboard
     {
         private List<Player> _players;
+        private string _fileName;
         public Leaderboard() 
         { 
-            _players= new List<Player>();
+            _players = new List<Player>();
+            _fileName = "leaderboard.json";
             this.Load();
         }
         public void Load() 
         {
-            var file = new StreamReader("leaderboard.txt");
-            string? load = file.ReadLine();
-            file.Close();
-
-            if (!string.IsNullOrEmpty(load)) 
+            if (File.Exists(_fileName))
             {
-                _players = JsonSerializer.Deserialize<List<Player>>(load);
+                var file = new StreamReader(_fileName);
+                string? load = file.ReadLine();
+                file.Close();
+
+                if (!string.IsNullOrEmpty(load))
+                {
+                    _players = JsonSerializer.Deserialize<List<Player>>(load);
+                }
             }
         }
         public void Save()
         {
-            var file = new StreamWriter("leaderboard.txt");
+            var file = new StreamWriter(_fileName);
             var save = JsonSerializer.Serialize(_players);
             file.Write(save);
             file.Close();
         }
         public bool NewRecord(int score) 
         {
-            if(_players.Count < 5) { return true; }
+            if(_players.Count < 5) { Console.WriteLine("count < 5"); return true; }
             foreach(Player player in _players)
             {
-                if(player.Score < score) { return true;}
+                if(player.Score > score) { Console.WriteLine("Rekord"); return true;}
             }
+            Console.WriteLine("Inget rekord");
             return false;
         }
         public void AddPlayer(string name, int score)
