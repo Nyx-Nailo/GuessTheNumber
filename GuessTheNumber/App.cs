@@ -41,14 +41,14 @@ namespace GuessTheNumber
             int min = 1;
             int max = 100;
             int guess;
-            var gameBoard = new GameBoard(min, max);
-            gameBoard.Display();
+            gameInterface.NewGame();
+            gameInterface.DisplayGameBoard();
             while (true)
             {
-                guess = gameBoard.GetGuess();
+                guess = gameInterface.GetGuess();
                 if (guess == target)
                 {
-                    int score = gameBoard.GetScore();
+                    int score = gameInterface.GetScore();
                     gameInterface.Winner(score);
                     if (scoreboard.NewRecord(score))
                     {
@@ -61,17 +61,18 @@ namespace GuessTheNumber
                 if (guess < target)
                 {
                     min = guess;
-                    gameBoard.UpdateRange(guess, max);
+                    gameInterface.UpdateRange(guess, max);
                 }
                 if (guess > target)
                 {
                     max = guess;
-                    gameBoard.UpdateRange(min, guess);
+                    gameInterface.UpdateRange(min, guess);
                 }
             }
         }
         private void Exit()
         {
+            gameInterface.Exit();
             scoreboard.Save();
         }
     }

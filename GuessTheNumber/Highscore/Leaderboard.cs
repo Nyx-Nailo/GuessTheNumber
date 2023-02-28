@@ -43,12 +43,11 @@ namespace GuessTheNumber.Highscore
         }
         public bool NewRecord(int score) 
         {
-            if(_players.Count < 5) { Console.WriteLine("count < 5"); return true; }
+            if(_players.Count < 5) { return true; }
             foreach(Player player in _players)
             {
-                if(player.Score > score) { Console.WriteLine("Rekord"); return true;}
+                if(player.Score > score) { return true;}
             }
-            Console.WriteLine("Inget rekord");
             return false;
         }
         public void AddPlayer(string name, int score)
