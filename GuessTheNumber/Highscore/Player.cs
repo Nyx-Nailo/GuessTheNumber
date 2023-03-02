@@ -8,12 +8,14 @@ namespace GuessTheNumber.Highscore
 {
     internal class Player
     {
-        public Player(string name, int score) 
+        public Player(string name, int score)
         {
             Name = name;
             Score = score;
+            Date = DateTime.Now;
         }
         public string Name { get; }
         public int Score { get; }
+        public DateTime Date{ get; }
     }
 }

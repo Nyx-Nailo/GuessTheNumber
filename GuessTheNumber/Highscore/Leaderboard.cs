@@ -30,7 +30,8 @@ namespace GuessTheNumber.Highscore
 
                 if (!string.IsNullOrEmpty(load))
                 {
-                    _players = JsonSerializer.Deserialize<List<Player>>(load);
+                    var temp = JsonSerializer.Deserialize<List<Player>>(load);
+                    if( temp != null) { _players = temp; }
                 }
             }
         }

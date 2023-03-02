@@ -3,7 +3,7 @@ using GuessTheNumber.UserInterface;
 
 namespace GuessTheNumber
 {
-    internal class Program
+    class Program
     {
         static void Main(string[] args)
         {

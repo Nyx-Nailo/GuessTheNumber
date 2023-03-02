@@ -14,7 +14,6 @@ namespace GuessTheNumber.UserInterface
         {
             Console.Clear();
             int[] menuPos = { Console.WindowWidth / 2, 3 };
-            int menuIndent = 4;
             int menuChoice = 1;
             Console.SetCursorPosition(menuPos[0] - 2, menuPos[1]);
             Console.WriteLine("Meny!");
@@ -67,12 +66,29 @@ namespace GuessTheNumber.UserInterface
         {
             Console.Clear();
             string text = "Rekordlista";
-            Console.SetCursorPosition((Console.WindowWidth - text.Length) / 2, 5);
-            Console.WriteLine(text);
-            foreach (Player player in players)
+            if (players.Count > 0 )
             {
-                text = $"{player.Name}: {player.Score}";
-                Console.SetCursorPosition(Console.WindowWidth / 2 - text.Split(':')[0].Length, Console.CursorTop);
+                Console.SetCursorPosition((Console.WindowWidth - text.Length) / 2, 5);
+                Console.WriteLine(text);
+                text = "Namn : Gissningar : Datum";
+                Console.SetCursorPosition((Console.WindowWidth - text.Length) / 2, 7);
+                Console.WriteLine(text);
+                foreach (Player player in players)
+                {
+                    Console.SetCursorPosition(51 - player.Name.Length, Console.CursorTop);
+                    Console.Write(player.Name);
+                    Console.SetCursorPosition(52, Console.CursorTop);
+                    Console.Write(":");
+                    Console.SetCursorPosition(52 + (65 - 52 - player.Score.ToString().Length) / 2, Console.CursorTop);
+                    Console.Write(player.Score);
+                    Console.SetCursorPosition(65, Console.CursorTop);
+                    Console.WriteLine($": {player.Date}");
+                }
+            }
+            else
+            {
+                text = "Det finns inga rekord, spela spelet!";
+                Console.SetCursorPosition((Console.WindowWidth - text.Length) / 2, Console.WindowHeight / 2);
                 Console.WriteLine(text);
             }
             WaitForAnyKey();
@@ -84,6 +100,40 @@ namespace GuessTheNumber.UserInterface
             Console.SetCursorPosition((Console.WindowWidth - text.Length) / 2, 5);
             Console.WriteLine(text);
         }
+        public void GameOver()
+        {
+            Console.Clear();
+            string[] text = {   " .----------------.  .----------------.  .----------------.  .----------------. ",
+                                "| .--------------. || .--------------. || .--------------. || .--------------. |",
+                                "| |    ______    | || |      __      | || | ____    ____ | || |  _________   | |",
+                               @"| |  .' ___  |   | || |     /  \     | || ||_   \  /   _|| || | |_   ___  |  | |",
+                               @"| | / .'   \_|   | || |    / /\ \    | || |  |   \/   |  | || |   | |_  \_|  | |",
+                               @"| | | |    ____  | || |   / ____ \   | || |  | |\  /| |  | || |   |  _|  _   | |",
+                               @"| | \ `.___]  _| | || | _/ /    \ \_ | || | _| |_\/_| |_ | || |  _| |___/ |  | |",
+                                "| |  `._____.'   | || ||____|  |____|| || ||_____||_____|| || | |_________|  | |",
+                                "| |              | || |              | || |              | || |              | |",
+                                "| '--------------' || '--------------' || '--------------' || '--------------' |",
+                                " '----------------'  '----------------'  '----------------'  '----------------' ",
+                                " .----------------.  .----------------.  .----------------.  .----------------. ",
+                                "| .--------------. || .--------------. || .--------------. || .--------------. |",
+                                "| |     ____     | || | ____   ____  | || |  _________   | || |  _______     | |",
+                               @"| |   .'    `.   | || ||_  _| |_  _| | || | |_   ___  |  | || | |_   __ \    | |",
+                               @"| |  /  .--.  \  | || |  \ \   / /   | || |   | |_  \_|  | || |   | |__) |   | |",
+                               @"| |  | |    | |  | || |   \ \ / /    | || |   |  _|  _   | || |   |  __ /    | |",
+                               @"| |  \  `--'  /  | || |    \ ' /     | || |  _| |___/ |  | || |  _| |  \ \_  | |",
+                               @"| |   `.____.'   | || |     \_/      | || | |_________|  | || | |____| |___| | |",
+                                "| |              | || |              | || |              | || |              | |",
+                                "| '--------------' || '--------------' || '--------------' || '--------------' |",
+                                " '----------------'  '----------------'  '----------------'  '----------------' "};
+            for(int i = 0; i < text.Length; i++)
+            {
+                Thread.Sleep(50);
+                Console.SetCursorPosition((Console.WindowWidth - text[i].Length) / 2, (Console.WindowHeight - text.Count()) / 2 + i);
+                Console.Write(text[i]);
+            }
+            Thread.Sleep(500);
+            WaitForAnyKey();
+        }
         public string AskForRekordName()
         {
             string text = "Du har plaserat på rekordlistan.";
@@ -94,18 +144,35 @@ namespace GuessTheNumber.UserInterface
             Console.Write(text + " ");
             int cursorW = Console.CursorLeft;
             int cursorH = Console.CursorTop;
-            string input;
+            string input = "";
             while (true)
             {
-                Console.SetCursorPosition( cursorW, cursorH);
-                input = Console.ReadLine();
-                text = "Vänligen skriv in ditt namn!";
-                Console.SetCursorPosition((Console.WindowWidth - text.Length) / 2, Console.CursorTop);
-                Console.WriteLine(text);
-                if (input.Length > 0) { break; }
+                Console.SetCursorPosition(0, cursorH + 1);
+                Console.Write(new string(' ', Console.WindowWidth));
+                Console.SetCursorPosition((Console.WindowWidth - input.Length) / 2, cursorH + 1);
+                Console.Write(input);
+                var keyPress = Console.ReadKey(true);
+                if (keyPress.Key == ConsoleKey.Enter)
+                {
+                    string error = "Namn måste vara minst ett tecken långt.";
+                    if (input.Length == 0)
+                    {
+                        Console.SetCursorPosition((Console.WindowWidth - error.Length) / 2, cursorH + 2);
+                        Console.WriteLine(error);
+                    }
+                    else { break; }
+                }
+                else if (keyPress.Key == ConsoleKey.Backspace)
+                {
+                    if (input.Length > 0) { input = input.Remove(input.Length - 1); }
+                }
+                else
+                {
+                    if (!(keyPress.KeyChar == '\u0000') && input.Length < 11) { input += keyPress.KeyChar; }
+                }
             }
             return input;
-        }
+        } //TODO max längd på namn input
         public void WaitForAnyKey()
         {
             Console.WriteLine();
@@ -143,7 +210,7 @@ namespace GuessTheNumber.UserInterface
             _rangePos = new int[] { widthStart + ((widthEnd - widthStart) / 2), heightStart + 3 };
             _rangePosMin = new int[] { _rangePos[0] - 1 - _rangeMin.ToString().Length, heightStart + 3 };
             _rangePosMax = new int[] { _rangePos[0] + 2, heightStart + 3 };
-            _guessCol = new int[] { widthStart + 39 + 2, widthStart + 3, widthStart + 20 + 2};
+            _guessCol = new int[] { widthStart + 39 + 2, widthStart + 3, widthStart + 20 + 2 };
         }
         public void NewGame()
         {
@@ -156,7 +223,7 @@ namespace GuessTheNumber.UserInterface
             Console.Clear();
             this.DrawBorder();
             string text = "Skriv in din gissing mellan";
-            Console.SetCursorPosition( (Console.WindowWidth - text.Length) / 2, _rangePos[1] - 1);
+            Console.SetCursorPosition((Console.WindowWidth - text.Length) / 2, _rangePos[1] - 1);
             Console.Write(text);
             Console.SetCursorPosition(_rangePosMin[0], _rangePosMin[1]);
             Console.Write(_rangeMin);
@@ -216,13 +283,13 @@ namespace GuessTheNumber.UserInterface
         }
         public int GetGuess()
         {
-            Console.SetCursorPosition( _guessCol[(_round + 1) % 3], _round / 3 + 9);
+            Console.SetCursorPosition(_guessCol[(_round + 1) % 3], _round / 3 + 9);
             Console.Write($"{_round + 1}: ");
             string guess = "";
             while (true)
             {
                 ConsoleKey key = Console.ReadKey(true).Key;
-                if (key == ConsoleKey.D0) { if(guess.Length > 0 && guess.Length < 3) { guess += "0"; Console.Write("0"); } }
+                if (key == ConsoleKey.D0) { if (guess.Length > 0 && guess.Length < 3) { guess += "0"; Console.Write("0"); } }
                 if (key == ConsoleKey.D1) { if (guess.Length < 3) { guess += "1"; Console.Write("1"); } }
                 if (key == ConsoleKey.D2) { if (guess.Length < 3) { guess += "2"; Console.Write("2"); } }
                 if (key == ConsoleKey.D3) { if (guess.Length < 3) { guess += "3"; Console.Write("3"); } }
@@ -236,7 +303,7 @@ namespace GuessTheNumber.UserInterface
                 {
                     if (guess.Length > 0)
                     {
-                        if (_rangeMin < Int32.Parse(guess) && Int32.Parse(guess) < _rangeMax)
+                        if (_rangeMin <= Int32.Parse(guess) && Int32.Parse(guess) <= _rangeMax)
                         {
                             _round++;
                             return Int32.Parse(guess);
@@ -252,7 +319,7 @@ namespace GuessTheNumber.UserInterface
                 }
                 if (key == ConsoleKey.Backspace)
                 {
-                    if( guess.Length > 0) 
+                    if (guess.Length > 0)
                     {
                         Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
                         Console.Write(" ");
@@ -261,6 +328,21 @@ namespace GuessTheNumber.UserInterface
                     }
                 }
             }
+        }
+        public void HigherOrLower(bool lower, int guess)
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            if (lower)
+            {
+                Console.SetCursorPosition(_guessCol[(_round) % 3] + 5 + guess.ToString().Length, (_round - 1) / 3 + 9);
+                Console.Write("↑");
+            }
+            else
+            {
+                Console.SetCursorPosition(_guessCol[(_round) % 3] + 5 + guess.ToString().Length, (_round - 1) / 3 + 9);
+                Console.Write("↓");
+            }
+            Console.ForegroundColor = ConsoleColor.White;
         }
         public int GetScore() { return _round; }
     }

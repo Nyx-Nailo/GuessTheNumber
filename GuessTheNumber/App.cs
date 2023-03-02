@@ -12,10 +12,14 @@ namespace GuessTheNumber
     {
         Leaderboard scoreboard;
         GameInterface gameInterface;
-        public void Run()
+        public App()
         {
             scoreboard = new Leaderboard();
             gameInterface = new GameInterface();
+        }
+        public void Run()
+        {
+            
             while (true)
             {
                 GameInterface.MenuChoice menuChoice = gameInterface.DisplayMenu();
@@ -45,6 +49,7 @@ namespace GuessTheNumber
             gameInterface.DisplayGameBoard();
             while (true)
             {
+                if (gameInterface.GetScore() == 42) { gameInterface.GameOver(); break; }
                 guess = gameInterface.GetGuess();
                 if (guess == target)
                 {
@@ -53,20 +58,25 @@ namespace GuessTheNumber
                     if (scoreboard.NewRecord(score))
                     {
                         string name = gameInterface.AskForRekordName();
-                        scoreboard.AddPlayer( name, score);
+                        scoreboard.AddPlayer(name, score);
                     }
-                    gameInterface.WaitForAnyKey();
+                    else
+                    {
+                        gameInterface.WaitForAnyKey();
+                    }
                     break;
                 }
                 if (guess < target)
                 {
                     min = guess;
                     gameInterface.UpdateRange(guess, max);
+                    gameInterface.HigherOrLower(true, guess);
                 }
                 if (guess > target)
                 {
                     max = guess;
                     gameInterface.UpdateRange(min, guess);
+                    gameInterface.HigherOrLower(false, guess);
                 }
             }
         }
