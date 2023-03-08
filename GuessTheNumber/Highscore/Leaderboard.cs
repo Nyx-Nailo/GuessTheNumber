@@ -20,7 +20,7 @@ namespace GuessTheNumber.Highscore
             _fileName = "leaderboard.json";
             this.Load();
         }
-        public void Load() 
+        private void Load() 
         {
             if (File.Exists(_fileName))
             {
