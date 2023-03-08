@@ -35,7 +35,7 @@ namespace GuessTheNumber.Highscore
                 }
             }
         }
-        public void Save()
+        private void Save()
         {
             var file = new StreamWriter(_fileName);
             var save = JsonSerializer.Serialize(_players);
@@ -56,6 +56,7 @@ namespace GuessTheNumber.Highscore
             _players.Add(new Player(name, score));
             _players = _players.OrderBy(p => p.Score).ToList();
             if (_players.Count() > 5) { _players.RemoveAt(5); }
+            Save();
         }
         public List<Player> GetLeaderboard() { return _players; }
     }

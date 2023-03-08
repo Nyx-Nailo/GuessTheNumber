@@ -172,7 +172,7 @@ namespace GuessTheNumber.UserInterface
                 }
             }
             return input;
-        } //TODO max längd på namn input
+        }
         public void WaitForAnyKey()
         {
             Console.WriteLine();

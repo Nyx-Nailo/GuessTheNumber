@@ -83,7 +83,6 @@ namespace GuessTheNumber
         private void Exit()
         {
             gameInterface.Exit();
-            scoreboard.Save();
         }
     }
 }
